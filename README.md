@@ -1,7 +1,7 @@
-Koa + RethinkDB + Socket.io + Nuxt
+Koa + RethinkDB
 ===========
 
-> A basic example creating a realtime application with Koa, RethinkDB, Socket.io and Nuxt.
+> A basic example creating an application with Koa + RethinkDB.
 
 quick start
 =============
