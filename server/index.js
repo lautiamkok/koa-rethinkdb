@@ -130,7 +130,7 @@ const insertUser = async(ctx, next) => {
   }
 
   var result = await r.table('users')
-    .insert(document)
+    .insert(document, {returnChanges: true})
     .run(connection)
 
   // If you want to get the doc id.
