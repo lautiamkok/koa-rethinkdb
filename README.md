@@ -3,7 +3,7 @@ Koa + RethinkDB
 
 > A basic example creating an application with Koa + RethinkDB.
 
-quick start
+Quick start
 =============
 
 ``` bash
@@ -14,7 +14,7 @@ $ npm install
 $ npm start
 ```
 
-Docs
+Dependencies
 ==========
 
 * [koa-static](https://github.com/koajs/static) - Koa static file serving middleware, wrapper for koa-send.
