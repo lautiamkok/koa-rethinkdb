@@ -3,6 +3,8 @@ Koa + RethinkDB
 
 > A basic example creating an application with Koa + RethinkDB.
 
+Read the post [here](https://www.codementor.io/lautiamkok/creating-an-application-with-koa-and-rethinkdb-c40j9frj1) about this repository.
+
 Quick start
 =============
 

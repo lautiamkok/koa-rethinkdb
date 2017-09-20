@@ -17,7 +17,8 @@
     "rethinkdb": "^2.3.3"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production NODE_PATH=./app nodemon --exec babel-node --presets es2015 server/index.js"
+    "dev": "cross-env NODE_PATH=./server nodemon --exec babel-node --presets es2015 server/index.js",
+    "start": "cross-env NODE_ENV=production NODE_PATH=./server nodemon --exec babel-node --presets es2015 server/index.js"
   },
   "keywords": [
     "kao",
