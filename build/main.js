@@ -842,6 +842,7 @@ __webpack_require__.r(__webpack_exports__);
     slug: body.slug
   };
   let slugFound = await user.findSlug(searchQuery);
+  console.log('slugFound = ', slugFound);
 
   if (slugFound) {
     ctx.throw(404, 'slug has been taken');
@@ -853,10 +854,10 @@ __webpack_require__.r(__webpack_exports__);
   let options = {
     name: body.name,
     slug: body.slug,
-    createdAt: timestamp,
-    // example fields that won't be injected into the document:
-    username: 'marymoe',
-    password: '123123'
+    createdAt: timestamp // example fields that won't be injected into the document:
+    // username: 'marymoe',
+    // password: '123123'
+
   };
   let result = await user.insert(options);
 
@@ -1136,7 +1137,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/rethinkdb */ "./src/core/model/rethinkdb/index.js");
 /* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
-/* harmony import */ var _schemas_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./schemas/user */ "./src/modules/user/models/schemas/user.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./schema */ "./src/modules/user/models/schema.js");
 
 
 
@@ -1152,7 +1153,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
     // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_2__["sanitise"])(options, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_2__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async findTable(tableName) {
@@ -1202,7 +1203,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schemas_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schemas/user */ "./src/modules/user/models/schemas/user.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 
 
 
@@ -1212,13 +1213,33 @@ __webpack_require__.r(__webpack_exports__);
 class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor(options) {
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async insert(options) {
     // Enforce the schema.
-    let data = options || this.data;
-    let document = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(data, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]); // Insert a doc.
+    let data = options || this.data; // let document = sanitise(data, schema)
+    // Create array and turn it to object.
+    // var arr = []
+    // var keys = schema._ids._byKey
+    // // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+    // new Map(keys).forEach(function (value, key, map) {
+    //   arr.push(key)
+    // })
+    // var obj = {};
+    // for (let i=0; i<arr.length; i++) {
+    //    obj[arr[i]] = null
+    // }
+    // Create the object directly.
+    // var obj = {}
+    // var keys = schema._ids._byKey
+    // // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+    // new Map(keys).forEach(function (value, key, map) {
+    //   obj[key] = null
+    // })
+    // let doc = sanitise(data, obj)
+
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_3__["default"].validateAsync(data); // Insert a doc.
     // https://rethinkdb.com/api/javascript/insert
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').insert(document, {
@@ -1245,7 +1266,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schemas_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schemas/user */ "./src/modules/user/models/schemas/user.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 
 
 
@@ -1255,7 +1276,7 @@ __webpack_require__.r(__webpack_exports__);
 class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor(options) {
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async delete(objectId) {
@@ -1283,7 +1304,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schemas_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schemas/user */ "./src/modules/user/models/schemas/user.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 
 
 
@@ -1299,7 +1320,7 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
     // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
     // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async fetch(searchQuery) {
@@ -1329,7 +1350,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schemas_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schemas/user */ "./src/modules/user/models/schemas/user.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 
 
 
@@ -1339,7 +1360,7 @@ __webpack_require__.r(__webpack_exports__);
 class Users extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor(options) {
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async fetch(searchQuery) {
@@ -1353,24 +1374,43 @@ class Users extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
 /***/ }),
 
-/***/ "./src/modules/user/models/schemas/user.js":
-/*!*************************************************!*\
-  !*** ./src/modules/user/models/schemas/user.js ***!
-  \*************************************************/
+/***/ "./src/modules/user/models/schema.js":
+/*!*******************************************!*\
+  !*** ./src/modules/user/models/schema.js ***!
+  \*******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _hapi_joi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @hapi/joi */ "@hapi/joi");
+/* harmony import */ var _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_hapi_joi__WEBPACK_IMPORTED_MODULE_0__);
 
 
-/* harmony default export */ __webpack_exports__["default"] = ({
+
+/* harmony default export */ __webpack_exports__["default"] = (_hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.object({
   // id: null, <-- cannot use id reserved by rdb.
-  slug: null,
-  name: null,
-  createdAt: null,
-  updatedAt: null
-});
+  slug: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim() // .lowercase()
+  .required().error(() => {
+    return {
+      message: '"slug" is required'
+    };
+  }),
+  name: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim().required(),
+  // username: Joi.string()
+  //   .alphanum()
+  //   .min(3)
+  //   .max(30)
+  //   .required(),
+  // password: Joi.string()
+  //   .pattern(/^[a-zA-Z0-9]{3,30}$/)
+  //   .required(),
+  // repeatPassword: Joi.ref('password'),
+  // Number only.
+  createdAt: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.number().integer().required(),
+  // Number or null.
+  updatedAt: [_hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.number().integer(), null]
+}));
 
 /***/ }),
 
@@ -1388,7 +1428,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schemas_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schemas/user */ "./src/modules/user/models/schemas/user.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 
 
 
@@ -1404,13 +1444,13 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
     // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
     // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async updateById(options, objectId) {
     // Enforce the schema.
     let data = options || this.data;
-    let document = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(data, _schemas_user__WEBPACK_IMPORTED_MODULE_3__["default"]); // Update document by id.
+    let document = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(data, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]); // Update document by id.
     // https://rethinkdb.com/api/javascript/update/
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').get(objectId).update(document, {
@@ -1464,6 +1504,17 @@ for (var module of modules) {
 
 module.exports = __webpack_require__(/*! /var/www/html/repo-github/koa-rethinkdb/src/index.js */"./src/index.js");
 
+
+/***/ }),
+
+/***/ "@hapi/joi":
+/*!****************************!*\
+  !*** external "@hapi/joi" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("@hapi/joi");
 
 /***/ }),
 

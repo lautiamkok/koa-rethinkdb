@@ -38,6 +38,7 @@ export default async (ctx) => {
     slug: body.slug
   }
   let slugFound = await user.findSlug(searchQuery)
+  console.log('slugFound = ', slugFound)
   if (slugFound) {
     ctx.throw(404, 'slug has been taken')
   }
@@ -50,8 +51,8 @@ export default async (ctx) => {
     slug: body.slug,
     createdAt: timestamp,
     // example fields that won't be injected into the document:
-    username: 'marymoe',
-    password: '123123'
+    // username: 'marymoe',
+    // password: '123123'
   }
   let result = await user.insert(options)
   if (result.inserted !== 1) {

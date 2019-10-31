@@ -3,7 +3,7 @@
 import rdb from 'rethinkdb'
 import { sanitise } from 'model/utils'
 import Model from '../Model'
-import schema from '../schemas/user'
+import schema from '../schema'
 
 export default class User extends Model {
   constructor (options) {

@@ -3,7 +3,7 @@
 import rdb from 'rethinkdb'
 import CoreModel from 'model/rethinkdb'
 import { sanitise } from 'model/utils'
-import schema from './schemas/user'
+import schema from './schema'
 
 export default class Model extends CoreModel {
   constructor (options) {

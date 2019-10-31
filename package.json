@@ -10,6 +10,7 @@
     "start": "cross-env NODE_ENV=production node build/main.js"
   },
   "dependencies": {
+    "@hapi/joi": "^16.1.7",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
