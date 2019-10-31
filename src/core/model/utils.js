@@ -32,4 +32,36 @@ function sanitise (options, schema) {
   return picked
 }
 
-export { sanitise }
+function objectifySchema (Schema) {
+  let object = {}
+  let keys = Schema._ids._byKey
+
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+  new Map(keys).forEach(function (value, key, map) {
+    object[key] = null
+  })
+
+  return object
+}
+
+function arrayifySchema (Schema) {
+  let array = []
+  let keys = Schema._ids._byKey
+
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+  new Map(keys).forEach(function (value, key, map) {
+    array.push(key)
+  })
+
+  let object = {}
+  for (let i = 0; i < array.length; i++) {
+     object[array[i]] = null
+  }
+
+  return object
+}
+
+export {
+  sanitise,
+  objectifySchema
+}

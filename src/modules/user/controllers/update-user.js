@@ -38,10 +38,7 @@ export default async (ctx) => {
 
   // Check if the provided slug is taken.
   // Find one doc except itself.
-  let searchQuery = {
-    slug: body.slug
-  }
-  let slugFound = await user.findSlugNotSelf(body.slug, objectId)
+  let slugFound = await user.getDocBySlugExcludeId(body.slug, objectId)
   if (slugFound) {
     ctx.throw(404, 'slug has been taken')
   }
@@ -56,8 +53,8 @@ export default async (ctx) => {
     slug: body.slug,
     updatedAt: timestamp,
     // example fields that won't be injected into the document:
-    username: 'marymoe',
-    password: '123123'
+    // username: 'marymoe',
+    // password: '123123'
   }
 
   // Merge two objects.

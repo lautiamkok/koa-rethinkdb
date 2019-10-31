@@ -202,6 +202,30 @@ const c = async () => {
 
 /***/ }),
 
+/***/ "./src/core/model/Schema.js":
+/*!**********************************!*\
+  !*** ./src/core/model/Schema.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Schema; });
+/* harmony import */ var _hapi_joi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @hapi/joi */ "@hapi/joi");
+/* harmony import */ var _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_hapi_joi__WEBPACK_IMPORTED_MODULE_0__);
+
+
+
+class Schema {
+  constructor(options) {
+    return _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.object(options);
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/core/model/rethinkdb/index.js":
 /*!*******************************************!*\
   !*** ./src/core/model/rethinkdb/index.js ***!
@@ -231,12 +255,13 @@ class Model {
 /*!*********************************!*\
   !*** ./src/core/model/utils.js ***!
   \*********************************/
-/*! exports provided: sanitise */
+/*! exports provided: sanitise, objectifySchema */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sanitise", function() { return sanitise; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "objectifySchema", function() { return objectifySchema; });
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -268,6 +293,32 @@ function sanitise(options, schema) {
 
   let picked = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.pick(defaults, keys);
   return picked;
+}
+
+function objectifySchema(Schema) {
+  let object = {};
+  let keys = Schema._ids._byKey; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+
+  new Map(keys).forEach(function (value, key, map) {
+    object[key] = null;
+  });
+  return object;
+}
+
+function arrayifySchema(Schema) {
+  let array = [];
+  let keys = Schema._ids._byKey; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+
+  new Map(keys).forEach(function (value, key, map) {
+    array.push(key);
+  });
+  let object = {};
+
+  for (let i = 0; i < array.length; i++) {
+    object[array[i]] = null;
+  }
+
+  return object;
 }
 
 
@@ -838,11 +889,7 @@ __webpack_require__.r(__webpack_exports__);
   } // Check if the provided slug is taken.
 
 
-  let searchQuery = {
-    slug: body.slug
-  };
-  let slugFound = await user.findSlug(searchQuery);
-  console.log('slugFound = ', slugFound);
+  let slugFound = await user.getDocBySlug(body.slug);
 
   if (slugFound) {
     ctx.throw(404, 'slug has been taken');
@@ -1047,10 +1094,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   // Find one doc except itself.
 
 
-  let searchQuery = {
-    slug: body.slug
-  };
-  let slugFound = await user.findSlugNotSelf(body.slug, objectId);
+  let slugFound = await user.getDocBySlugExcludeId(body.slug, objectId);
 
   if (slugFound) {
     ctx.throw(404, 'slug has been taken');
@@ -1063,10 +1107,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   let updateQuery = {
     name: body.name,
     slug: body.slug,
-    updatedAt: timestamp,
-    // example fields that won't be injected into the document:
-    username: 'marymoe',
-    password: '123123' // Merge two objects.
+    updatedAt: timestamp // example fields that won't be injected into the document:
+    // username: 'marymoe',
+    // password: '123123'
+    // Merge two objects.
 
   };
 
@@ -1161,14 +1205,17 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     return exists;
   }
 
-  async findSlug(options) {
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').filter(options).nth(0) // query for a stream/array element by its position
+  async getDocBySlug(slug) {
+    let searchQuery = {
+      slug: slug
+    };
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').filter(searchQuery).nth(0) // query for a stream/array element by its position
     .default(null) // will return null if no user found.
     .run(this.connection);
     return result;
   }
 
-  async findSlugNotSelf(slugName, objectId) {
+  async getDocBySlugExcludeId(slugName, objectId) {
     // Find one doc except itself.
     // https://rethinkdb.com/api/javascript/filter
     // https://rethinkdb.com/api/javascript/ne
@@ -1201,10 +1248,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return User; });
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rethinkdb */ "rethinkdb");
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
-
 
 
 
@@ -1213,33 +1258,13 @@ __webpack_require__.r(__webpack_exports__);
 class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor(options) {
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validate(options);
   }
 
   async insert(options) {
     // Enforce the schema.
-    let data = options || this.data; // let document = sanitise(data, schema)
-    // Create array and turn it to object.
-    // var arr = []
-    // var keys = schema._ids._byKey
-    // // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
-    // new Map(keys).forEach(function (value, key, map) {
-    //   arr.push(key)
-    // })
-    // var obj = {};
-    // for (let i=0; i<arr.length; i++) {
-    //    obj[arr[i]] = null
-    // }
-    // Create the object directly.
-    // var obj = {}
-    // var keys = schema._ids._byKey
-    // // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
-    // new Map(keys).forEach(function (value, key, map) {
-    //   obj[key] = null
-    // })
-    // let doc = sanitise(data, obj)
-
-    let document = await _schema__WEBPACK_IMPORTED_MODULE_3__["default"].validateAsync(data); // Insert a doc.
+    let data = options || this.data;
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(data); // Insert a doc.
     // https://rethinkdb.com/api/javascript/insert
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').insert(document, {
@@ -1264,19 +1289,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return User; });
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rethinkdb */ "rethinkdb");
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
-/* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
+/* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
 
 
 
 
-
-
-class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
+class User extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
   constructor(options) {
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async delete(objectId) {
@@ -1302,25 +1322,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return User; });
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rethinkdb */ "rethinkdb");
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
-/* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
+/* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
 
 
 
 
-
-
-class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
+class User extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
   constructor(options) {
-    // The rules for ES2015 (ES6) classes basically come down to: // 1. In a child
-    // class constructor, this cannot be used until super is called. // 2. ES6 class
-    // constructors MUST call super if they are subclasses, or they must explicitly
-    // return some object to take the place of the one that was not initialized. //
-    // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
-    // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 
   async fetch(searchQuery) {
@@ -1385,17 +1394,16 @@ class Users extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hapi_joi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @hapi/joi */ "@hapi/joi");
 /* harmony import */ var _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_hapi_joi__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var model_Schema__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/Schema */ "./src/core/model/Schema.js");
 
 
 
-/* harmony default export */ __webpack_exports__["default"] = (_hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.object({
-  // id: null, <-- cannot use id reserved by rdb.
+ // https://hapi.dev/family/joi/?v=16.1.7
+
+/* harmony default export */ __webpack_exports__["default"] = (new model_Schema__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  id: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().guid(),
   slug: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim() // .lowercase()
-  .required().error(() => {
-    return {
-      message: '"slug" is required'
-    };
-  }),
+  .required(),
   name: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim().required(),
   // username: Joi.string()
   //   .alphanum()
@@ -1426,10 +1434,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return User; });
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rethinkdb */ "rethinkdb");
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
-
 
 
 
@@ -1437,20 +1443,14 @@ __webpack_require__.r(__webpack_exports__);
 
 class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor(options) {
-    // The rules for ES2015 (ES6) classes basically come down to: // 1. In a child
-    // class constructor, this cannot be used until super is called. // 2. ES6 class
-    // constructors MUST call super if they are subclasses, or they must explicitly
-    // return some object to take the place of the one that was not initialized. //
-    // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
-    // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
     super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.data = _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validate(options);
   }
 
   async updateById(options, objectId) {
     // Enforce the schema.
     let data = options || this.data;
-    let document = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(data, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]); // Update document by id.
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(data); // Update document by id.
     // https://rethinkdb.com/api/javascript/update/
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').get(objectId).update(document, {

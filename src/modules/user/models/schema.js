@@ -1,18 +1,17 @@
 'use strict'
 
 import Joi from '@hapi/joi'
+import Schema from 'model/Schema'
 
-export default Joi.object({
-  // id: null, <-- cannot use id reserved by rdb.
+// https://hapi.dev/family/joi/?v=16.1.7
+export default new Schema({
+  id: Joi.string()
+    .guid(),
+
   slug: Joi.string()
     .trim()
     // .lowercase()
-    .required()
-    .error(() => {
-      return {
-        message: '"slug" is required'
-      };
-    }),
+    .required(),
 
   name: Joi.string()
     .trim()

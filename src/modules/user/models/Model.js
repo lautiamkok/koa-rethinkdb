@@ -25,9 +25,12 @@ export default class Model extends CoreModel {
     return exists
   }
 
-  async findSlug (options) {
+  async getDocBySlug (slug) {
+    let searchQuery = {
+      slug: slug
+    }
     let result = await rdb.table('users')
-      .filter(options)
+      .filter(searchQuery)
       .nth(0) // query for a stream/array element by its position
       .default(null) // will return null if no user found.
       .run(this.connection)
@@ -35,7 +38,7 @@ export default class Model extends CoreModel {
     return result
   }
 
-  async findSlugNotSelf (slugName, objectId) {
+  async getDocBySlugExcludeId (slugName, objectId) {
     // Find one doc except itself.
     // https://rethinkdb.com/api/javascript/filter
     // https://rethinkdb.com/api/javascript/ne
