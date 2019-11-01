@@ -28,10 +28,10 @@ export default async (ctx) => {
   let objectId = body.id
 
   // Create a user instance.
-  let user = new User(ctx._rdbConn)
+  let user = new User(ctx._rdbConn, 'user')
 
   // Throw the error if the table does not exist.
-  let tableFound = await user.findTable('users')
+  let tableFound = await user.hasTable()
   if (tableFound === false) {
     ctx.throw(500, 'users table does not exist')
   }

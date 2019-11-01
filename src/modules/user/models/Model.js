@@ -2,24 +2,16 @@
 
 import rdb from 'rethinkdb'
 import CoreModel from 'model/rethinkdb'
-import { sanitise } from 'model/utils'
 import schema from './schema'
 
 export default class Model extends CoreModel {
-  constructor (options) {
-    // The rules for ES2015 (ES6) classes basically come down to: // 1. In a child
-    // class constructor, this cannot be used until super is called. // 2. ES6 class
-    // constructors MUST call super if they are subclasses, or they must explicitly
-    // return some object to take the place of the one that was not initialized. //
-    // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
-    // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
-    super(options)
-    this.data = sanitise(options, schema)
+  constructor (...args) {
+    super(...args)
   }
 
-  async findTable (tableName) {
+  async hasTable () {
     let exists = await rdb.tableList()
-      .contains(tableName)
+      .contains(this.table)
       .run(this.connection)
 
     return exists
@@ -29,7 +21,7 @@ export default class Model extends CoreModel {
     let searchQuery = {
       slug: slug
     }
-    let result = await rdb.table('users')
+    let result = await rdb.table(this.table)
       .filter(searchQuery)
       .nth(0) // query for a stream/array element by its position
       .default(null) // will return null if no user found.
@@ -42,7 +34,7 @@ export default class Model extends CoreModel {
     // Find one doc except itself.
     // https://rethinkdb.com/api/javascript/filter
     // https://rethinkdb.com/api/javascript/ne
-    let result = await rdb.table('users')
+    let result = await rdb.table(this.table)
       .filter(
         rdb.row('slug').eq(slugName) // equal
       )
@@ -57,7 +49,7 @@ export default class Model extends CoreModel {
   }
 
   async getDocById (objectId) {
-    let result = await rdb.table('users')
+    let result = await rdb.table(this.table)
       .get(objectId)
       .run(this.connection)
 

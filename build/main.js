@@ -242,86 +242,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Model {
-  constructor(connection, options) {
-    this.data = {};
+  constructor(connection, table, options) {
+    this.table = table;
+    this.options = options;
     this.connection = connection;
   }
 
 }
-
-/***/ }),
-
-/***/ "./src/core/model/utils.js":
-/*!*********************************!*\
-  !*** ./src/core/model/utils.js ***!
-  \*********************************/
-/*! exports provided: sanitise, objectifySchema */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sanitise", function() { return sanitise; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "objectifySchema", function() { return objectifySchema; });
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
-
-
-
-
-function sanitise(options, schema) {
-  let data = options || {};
-
-  if (schema === undefined) {
-    // ctx is not passed into this level so can't do:
-    // ctx.throw(400, '_id is required.')
-    // So use a native error and throw it.
-    const err = new Error('Schema is required.');
-    err.status = 400;
-    err.expose = true;
-    throw err;
-  } // Get the keys from the object.
-  // https://lodash.com/docs/4.17.4#keys
-
-
-  let keys = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.keys(schema); // Source objects are applied from left to right. Once a property is set,
-  // additional values of the same property are ignored.
-  // https://lodash.com/docs/4.17.4#defaults
-
-  let defaults = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.defaults(data, schema); // Creates an object composed of the picked object properties.
-  // https://lodash.com/docs/4.17.4#pick
-  // let picked = lodash.pick(data, keys)
-
-  let picked = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.pick(defaults, keys);
-  return picked;
-}
-
-function objectifySchema(Schema) {
-  let object = {};
-  let keys = Schema._ids._byKey; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
-
-  new Map(keys).forEach(function (value, key, map) {
-    object[key] = null;
-  });
-  return object;
-}
-
-function arrayifySchema(Schema) {
-  let array = [];
-  let keys = Schema._ids._byKey; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
-
-  new Map(keys).forEach(function (value, key, map) {
-    array.push(key);
-  });
-  let object = {};
-
-  for (let i = 0; i < array.length; i++) {
-    object[array[i]] = null;
-  }
-
-  return object;
-}
-
-
 
 /***/ }),
 
@@ -700,14 +627,14 @@ __webpack_require__.r(__webpack_exports__);
   } // Create a user instance.
 
 
-  let user = new _models_create_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, {
+  let user = new _models_create_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user', {
     // example fields that won't be injected into the document:
     uuid: '1',
     name: 'dummy',
     password: '1234'
   }); // Throw the error if the table does not exist.
 
-  let tableFound = await user.findTable('users');
+  let tableFound = await user.hasTable();
 
   if (tableFound === false) {
     ctx.throw(500, 'users table does not exist');
@@ -769,9 +696,9 @@ __webpack_require__.r(__webpack_exports__);
 
   let objectId = body.id; // Create a user instance.
 
-  let user = new _models_delete_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn); // Throw the error if the table does not exist.
+  let user = new _models_delete_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user'); // Throw the error if the table does not exist.
 
-  let tableFound = await user.findTable('users');
+  let tableFound = await user.hasTable();
 
   if (tableFound === false) {
     ctx.throw(500, 'users table does not exist');
@@ -814,9 +741,9 @@ __webpack_require__.r(__webpack_exports__);
     slug: slug // Create a user instance.
 
   };
-  let user = new _models_read_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn); // Throw the error if the table does not exist.
+  let user = new _models_read_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user'); // Throw the error if the table does not exist.
 
-  let tableFound = await user.findTable('users');
+  let tableFound = await user.hasTable();
 
   if (tableFound === false) {
     ctx.throw(500, 'users table does not exist');
@@ -848,9 +775,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = (async ctx => {
   // Create a user instance.
-  let users = new _models_read_Users__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn); // Throw the error if the table does not exist.
+  let users = new _models_read_Users__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user'); // Throw the error if the table does not exist.
 
-  let tableFound = await users.findTable('users');
+  let tableFound = await users.hasTable();
 
   if (tableFound === false) {
     ctx.throw(500, 'users table does not exist');
@@ -909,9 +836,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
   let objectId = body.id; // Create a user instance.
 
-  let user = new _models_update_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn); // Throw the error if the table does not exist.
+  let user = new _models_update_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user'); // Throw the error if the table does not exist.
 
-  let tableFound = await user.findTable('users');
+  let tableFound = await user.hasTable();
 
   if (tableFound === false) {
     ctx.throw(500, 'users table does not exist');
@@ -1005,28 +932,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rethinkdb */ "rethinkdb");
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/rethinkdb */ "./src/core/model/rethinkdb/index.js");
-/* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
-/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./schema */ "./src/modules/user/models/schema.js");
-
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./schema */ "./src/modules/user/models/schema.js");
 
 
 
 
 
 class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
-  constructor(options) {
-    // The rules for ES2015 (ES6) classes basically come down to: // 1. In a child
-    // class constructor, this cannot be used until super is called. // 2. ES6 class
-    // constructors MUST call super if they are subclasses, or they must explicitly
-    // return some object to take the place of the one that was not initialized. //
-    // https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes#toc-creating-subclasses-with-extends-calling-with-super //
-    // https://stackoverflow.com/questions/31067368/javascript-es6-class-extend-without-super
-    super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_2__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
+  constructor(...args) {
+    super(...args);
   }
 
-  async findTable(tableName) {
-    let exists = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.tableList().contains(tableName).run(this.connection);
+  async hasTable() {
+    let exists = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.tableList().contains(this.table).run(this.connection);
     return exists;
   }
 
@@ -1034,7 +952,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     let searchQuery = {
       slug: slug
     };
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').filter(searchQuery).nth(0) // query for a stream/array element by its position
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).filter(searchQuery).nth(0) // query for a stream/array element by its position
     .default(null) // will return null if no user found.
     .run(this.connection);
     return result;
@@ -1044,7 +962,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     // Find one doc except itself.
     // https://rethinkdb.com/api/javascript/filter
     // https://rethinkdb.com/api/javascript/ne
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').filter(rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.row('slug').eq(slugName) // equal
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).filter(rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.row('slug').eq(slugName) // equal
     ).filter(rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.row('id').ne(objectId) // but not equal itself
     ).nth(0) // query for a stream/array element by its position
     .default(null) // will return null if no user found.
@@ -1053,7 +971,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
   }
 
   async getDocById(objectId) {
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').get(objectId).run(this.connection);
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).run(this.connection);
     return result;
   }
 
@@ -1081,18 +999,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
-  constructor(options) {
-    super(options);
-    this.data = _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validate(options);
+  constructor(...args) {
+    super(...args);
   }
 
   async insert(options) {
     // Enforce the schema.
-    let data = options || this.data;
+    let data = options || this.options;
     let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(data); // Insert a doc.
     // https://rethinkdb.com/api/javascript/insert
 
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').insert(document, {
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).insert(document, {
       returnChanges: true
     }).run(this.connection);
     return result;
@@ -1120,14 +1037,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class User extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
-  constructor(options) {
-    super(options);
+  constructor(...args) {
+    super(...args);
   }
 
   async delete(objectId) {
     // Delete a single document by id.
     // https://rethinkdb.com/api/javascript/delete/
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').get(objectId).delete().run(this.connection);
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).delete().run(this.connection);
     return result;
   }
 
@@ -1153,14 +1070,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class User extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
-  constructor(options) {
-    super(options);
+  constructor(...args) {
+    super(...args);
   }
 
   async fetch(searchQuery) {
     // Retrieve documents by filter.
     // https://rethinkdb.com/api/javascript/filter/
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').filter(searchQuery).nth(0) // query for a stream/array element by its position
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).filter(searchQuery).nth(0) // query for a stream/array element by its position
     .default(null) // will return null if no user found.
     .run(this.connection);
     return result;
@@ -1182,23 +1099,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Users; });
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rethinkdb */ "rethinkdb");
 /* harmony import */ var rethinkdb__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rethinkdb__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var model_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! model/utils */ "./src/core/model/utils.js");
-/* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
-/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../schema */ "./src/modules/user/models/schema.js");
+/* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
 
 
 
 
-
-
-class Users extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
-  constructor(options) {
-    super(options);
-    this.data = Object(model_utils__WEBPACK_IMPORTED_MODULE_1__["sanitise"])(options, _schema__WEBPACK_IMPORTED_MODULE_3__["default"]);
+class Users extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(...args) {
+    super(...args);
   }
 
   async fetch(searchQuery) {
-    let cursor = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').orderBy(rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.desc('createdAt')) // latest first
+    let cursor = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).orderBy(rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.desc('createdAt')) // latest first
     .run(this.connection);
     let result = await cursor.toArray();
     return result;
@@ -1267,9 +1179,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
-  constructor(options) {
-    super(options);
-    this.data = _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validate(options);
+  constructor(...args) {
+    super(...args);
   }
 
   async updateById(options, objectId) {
@@ -1278,7 +1189,7 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
     let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(data); // Update document by id.
     // https://rethinkdb.com/api/javascript/update/
 
-    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').get(objectId).update(document, {
+    let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).update(document, {
       returnChanges: true
     }).run(this.connection);
     return result;
@@ -1570,17 +1481,6 @@ module.exports = require("koa-router");
 /***/ (function(module, exports) {
 
 module.exports = require("koa-static");
-
-/***/ }),
-
-/***/ "lodash":
-/*!*************************!*\
-  !*** external "lodash" ***!
-  \*************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("lodash");
 
 /***/ }),
 

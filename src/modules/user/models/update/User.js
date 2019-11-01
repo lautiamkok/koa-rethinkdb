@@ -5,9 +5,8 @@ import schema from '../schema'
 import Model from '../Model'
 
 export default class User extends Model {
-  constructor (options) {
-    super(options)
-    this.data = schema.validate(options)
+  constructor (...args) {
+    super(...args)
   }
 
   async updateById (options, objectId) {
@@ -17,7 +16,7 @@ export default class User extends Model {
 
     // Update document by id.
     // https://rethinkdb.com/api/javascript/update/
-    let result = await rdb.table('users')
+    let result = await rdb.table(this.table)
       .get(objectId)
       .update(document, {returnChanges: true})
       .run(this.connection)
