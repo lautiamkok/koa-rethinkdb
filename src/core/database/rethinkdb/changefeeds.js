@@ -9,7 +9,7 @@ export default async (io) => {
     const connection = await rdbConnection()
 
     // Subscribe to user table's changefeed.
-    var cursor = await rdb.table('users')
+    var cursor = await rdb.table('user')
       .changes()
       .run(connection)
 
