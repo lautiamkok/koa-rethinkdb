@@ -38,13 +38,13 @@ export default async (ctx) => {
 
   // Check if the provided slug is taken.
   // Find one doc except itself.
-  let slugFound = await user.getDocBySlugExcludeId(body.slug, objectId)
+  let slugFound = await user.getBySlugExcludeId(body.slug, objectId)
   if (slugFound) {
     ctx.throw(404, 'slug has been taken')
   }
 
   // Get the current doc.
-  let currentDocument = await user.getDocById(objectId)
+  let currentDocument = await user.getById(objectId)
 
   // Prepare the update query.
   let timestamp = Date.now()

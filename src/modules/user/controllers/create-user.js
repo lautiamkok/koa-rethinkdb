@@ -29,7 +29,7 @@ export default async (ctx) => {
   }
 
   // Check if the provided slug is taken.
-  let slugFound = await user.getDocBySlug(body.slug)
+  let slugFound = await user.getBySlug(body.slug)
   if (slugFound) {
     ctx.throw(404, 'slug has been taken')
   }

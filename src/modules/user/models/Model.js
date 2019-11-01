@@ -17,7 +17,7 @@ export default class Model extends CoreModel {
     return exists
   }
 
-  async getDocBySlug (slug) {
+  async getBySlug (slug) {
     let searchQuery = {
       slug: slug
     }
@@ -30,7 +30,7 @@ export default class Model extends CoreModel {
     return result
   }
 
-  async getDocBySlugExcludeId (slugName, objectId) {
+  async getBySlugExcludeId (slugName, objectId) {
     // Find one doc except itself.
     // https://rethinkdb.com/api/javascript/filter
     // https://rethinkdb.com/api/javascript/ne
@@ -48,7 +48,7 @@ export default class Model extends CoreModel {
     return result
   }
 
-  async getDocById (objectId) {
+  async getById (objectId) {
     let result = await rdb.table(this.table)
       .get(objectId)
       .run(this.connection)

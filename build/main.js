@@ -635,7 +635,7 @@ __webpack_require__.r(__webpack_exports__);
   } // Check if the provided slug is taken.
 
 
-  let slugFound = await user.getDocBySlug(body.slug);
+  let slugFound = await user.getBySlug(body.slug);
 
   if (slugFound) {
     ctx.throw(404, 'slug has been taken');
@@ -699,7 +699,7 @@ __webpack_require__.r(__webpack_exports__);
   } // Find one doc.
 
 
-  const found = await user.getDocById(objectId);
+  const found = await user.getById(objectId);
 
   if (!found) {
     ctx.throw(404, 'user does not exist');
@@ -837,14 +837,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   // Find one doc except itself.
 
 
-  let slugFound = await user.getDocBySlugExcludeId(body.slug, objectId);
+  let slugFound = await user.getBySlugExcludeId(body.slug, objectId);
 
   if (slugFound) {
     ctx.throw(404, 'slug has been taken');
   } // Get the current doc.
 
 
-  let currentDocument = await user.getDocById(objectId); // Prepare the update query.
+  let currentDocument = await user.getById(objectId); // Prepare the update query.
 
   let timestamp = Date.now();
   let updateQuery = {
@@ -939,7 +939,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     return exists;
   }
 
-  async getDocBySlug(slug) {
+  async getBySlug(slug) {
     let searchQuery = {
       slug: slug
     };
@@ -949,7 +949,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     return result;
   }
 
-  async getDocBySlugExcludeId(slugName, objectId) {
+  async getBySlugExcludeId(slugName, objectId) {
     // Find one doc except itself.
     // https://rethinkdb.com/api/javascript/filter
     // https://rethinkdb.com/api/javascript/ne
@@ -961,7 +961,7 @@ class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
     return result;
   }
 
-  async getDocById(objectId) {
+  async getById(objectId) {
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).run(this.connection);
     return result;
   }

@@ -25,7 +25,7 @@ export default async (ctx) => {
   }
 
   // Find one doc.
-  const found = await user.getDocById(objectId)
+  const found = await user.getById(objectId)
   if (!found) {
     ctx.throw(404, 'user does not exist')
   }
