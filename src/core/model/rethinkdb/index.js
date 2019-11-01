@@ -7,4 +7,12 @@ export default class Model {
     this.table = table
     this.connection = connection
   }
+
+  async hasTable () {
+    let exists = await rdb.tableList()
+      .contains(this.table)
+      .run(this.connection)
+
+    return exists
+  }
 }

@@ -9,14 +9,6 @@ export default class Model extends CoreModel {
     super(...args)
   }
 
-  async hasTable () {
-    let exists = await rdb.tableList()
-      .contains(this.table)
-      .run(this.connection)
-
-    return exists
-  }
-
   async getBySlug (slug) {
     let searchQuery = {
       slug: slug
