@@ -593,10 +593,39 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/home/_routes/index.js":
-/*!*******************************************!*\
-  !*** ./src/modules/home/_routes/index.js ***!
-  \*******************************************/
+/***/ "./src/modules/home/index.js":
+/*!***********************************!*\
+  !*** ./src/modules/home/index.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes */ "./src/modules/home/routes/index.js");
+
+
+
+ // Better with prefix
+// https://www.npmjs.com/package/koa-router#router-prefixes
+
+const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a();
+const routes = [_routes__WEBPACK_IMPORTED_MODULE_1__["default"]];
+
+for (var route of routes) {
+  router.use(route.routes(), route.allowedMethods());
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (router);
+
+/***/ }),
+
+/***/ "./src/modules/home/routes/index.js":
+/*!******************************************!*\
+  !*** ./src/modules/home/routes/index.js ***!
+  \******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -632,210 +661,6 @@ router.get('/', middleware1, middleware2, middleware3, async (ctx, next) => {
   ctx.body = {
     message: 'Hello World!'
   };
-});
-/* harmony default export */ __webpack_exports__["default"] = (router);
-
-/***/ }),
-
-/***/ "./src/modules/home/index.js":
-/*!***********************************!*\
-  !*** ./src/modules/home/index.js ***!
-  \***********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_routes */ "./src/modules/home/_routes/index.js");
-
-
-
- // Better with prefix
-// https://www.npmjs.com/package/koa-router#router-prefixes
-
-const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a();
-const routes = [_routes__WEBPACK_IMPORTED_MODULE_1__["default"]];
-
-for (var route of routes) {
-  router.use(route.routes(), route.allowedMethods());
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (router);
-
-/***/ }),
-
-/***/ "./src/modules/user/_routes/create-user.js":
-/*!*************************************************!*\
-  !*** ./src/modules/user/_routes/create-user.js ***!
-  \*************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_create_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/create-user */ "./src/modules/user/controllers/create-user.js");
-
-
-
-
-const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Add a user.
-
-router.post('/user', async (ctx, next) => {
-  try {
-    const result = await Object(_controllers_create_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
-    ctx.type = 'json';
-    ctx.body = result;
-    await next();
-  } catch (err) {
-    // Get the error message and do something.
-    // console.log(err.message)
-    // Throw the error.
-    ctx.throw(500, err);
-  }
-});
-/* harmony default export */ __webpack_exports__["default"] = (router);
-
-/***/ }),
-
-/***/ "./src/modules/user/_routes/delete-user.js":
-/*!*************************************************!*\
-  !*** ./src/modules/user/_routes/delete-user.js ***!
-  \*************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_delete_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/delete-user */ "./src/modules/user/controllers/delete-user.js");
-
-
-
-
-const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Delete a user.
-
-router.del('/user', async (ctx, next) => {
-  try {
-    const result = await Object(_controllers_delete_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
-    ctx.type = 'json';
-    ctx.body = result;
-    await next();
-  } catch (err) {
-    // Get the error message and do something.
-    // console.log(err.message)
-    // Throw the error.
-    ctx.throw(500, err);
-  }
-});
-/* harmony default export */ __webpack_exports__["default"] = (router);
-
-/***/ }),
-
-/***/ "./src/modules/user/_routes/fetch-user.js":
-/*!************************************************!*\
-  !*** ./src/modules/user/_routes/fetch-user.js ***!
-  \************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_fetch_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/fetch-user */ "./src/modules/user/controllers/fetch-user.js");
-
-
-
-
-const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Get the user by slug.
-
-router.get('/:slug', async (ctx, next) => {
-  try {
-    const result = await Object(_controllers_fetch_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
-    ctx.type = 'json';
-    ctx.body = result;
-    await next();
-  } catch (err) {
-    // Get the error message and do something.
-    // console.log(err.message)
-    // Throw the error.
-    ctx.throw(500, err);
-  }
-});
-/* harmony default export */ __webpack_exports__["default"] = (router);
-
-/***/ }),
-
-/***/ "./src/modules/user/_routes/index.js":
-/*!*******************************************!*\
-  !*** ./src/modules/user/_routes/index.js ***!
-  \*******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/index */ "./src/modules/user/controllers/index.js");
-
-
-
-
-const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Get all users.
-
-router.get('/', async (ctx, next) => {
-  try {
-    const result = await Object(_controllers_index__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
-    ctx.type = 'json';
-    ctx.body = result;
-    await next();
-  } catch (err) {
-    // Get the error message and do something.
-    // console.log(err.message)
-    // Throw the error.
-    ctx.throw(500, err);
-  }
-});
-/* harmony default export */ __webpack_exports__["default"] = (router);
-
-/***/ }),
-
-/***/ "./src/modules/user/_routes/update-user.js":
-/*!*************************************************!*\
-  !*** ./src/modules/user/_routes/update-user.js ***!
-  \*************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
-/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_update_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/update-user */ "./src/modules/user/controllers/update-user.js");
-
-
-
-
-const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Update a user.
-
-router.put('/user', async (ctx, next) => {
-  try {
-    const result = await Object(_controllers_update_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx);
-    ctx.type = 'json';
-    ctx.body = result;
-    await next();
-  } catch (err) {
-    // Get the error message and do something.
-    // console.log(err.message)
-    // Throw the error.
-    ctx.throw(500, err);
-  }
 });
 /* harmony default export */ __webpack_exports__["default"] = (router);
 
@@ -1139,11 +964,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_routes */ "./src/modules/user/_routes/index.js");
-/* harmony import */ var _routes_fetch_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_routes/fetch-user */ "./src/modules/user/_routes/fetch-user.js");
-/* harmony import */ var _routes_create_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_routes/create-user */ "./src/modules/user/_routes/create-user.js");
-/* harmony import */ var _routes_update_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_routes/update-user */ "./src/modules/user/_routes/update-user.js");
-/* harmony import */ var _routes_delete_user__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./_routes/delete-user */ "./src/modules/user/_routes/delete-user.js");
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes */ "./src/modules/user/routes/index.js");
+/* harmony import */ var _routes_fetch_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routes/fetch-user */ "./src/modules/user/routes/fetch-user.js");
+/* harmony import */ var _routes_create_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./routes/create-user */ "./src/modules/user/routes/create-user.js");
+/* harmony import */ var _routes_update_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./routes/update-user */ "./src/modules/user/routes/update-user.js");
+/* harmony import */ var _routes_delete_user__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./routes/delete-user */ "./src/modules/user/routes/delete-user.js");
 
 
 
@@ -1460,6 +1285,181 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
   }
 
 }
+
+/***/ }),
+
+/***/ "./src/modules/user/routes/create-user.js":
+/*!************************************************!*\
+  !*** ./src/modules/user/routes/create-user.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _controllers_create_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/create-user */ "./src/modules/user/controllers/create-user.js");
+
+
+
+
+const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Add a user.
+
+router.post('/user', async (ctx, next) => {
+  try {
+    const result = await Object(_controllers_create_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
+    ctx.type = 'json';
+    ctx.body = result;
+    await next();
+  } catch (err) {
+    // Get the error message and do something.
+    // console.log(err.message)
+    // Throw the error.
+    ctx.throw(500, err);
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
+
+/***/ }),
+
+/***/ "./src/modules/user/routes/delete-user.js":
+/*!************************************************!*\
+  !*** ./src/modules/user/routes/delete-user.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _controllers_delete_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/delete-user */ "./src/modules/user/controllers/delete-user.js");
+
+
+
+
+const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Delete a user.
+
+router.del('/user', async (ctx, next) => {
+  try {
+    const result = await Object(_controllers_delete_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
+    ctx.type = 'json';
+    ctx.body = result;
+    await next();
+  } catch (err) {
+    // Get the error message and do something.
+    // console.log(err.message)
+    // Throw the error.
+    ctx.throw(500, err);
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
+
+/***/ }),
+
+/***/ "./src/modules/user/routes/fetch-user.js":
+/*!***********************************************!*\
+  !*** ./src/modules/user/routes/fetch-user.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _controllers_fetch_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/fetch-user */ "./src/modules/user/controllers/fetch-user.js");
+
+
+
+
+const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Get the user by slug.
+
+router.get('/:slug', async (ctx, next) => {
+  try {
+    const result = await Object(_controllers_fetch_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
+    ctx.type = 'json';
+    ctx.body = result;
+    await next();
+  } catch (err) {
+    // Get the error message and do something.
+    // console.log(err.message)
+    // Throw the error.
+    ctx.throw(500, err);
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
+
+/***/ }),
+
+/***/ "./src/modules/user/routes/index.js":
+/*!******************************************!*\
+  !*** ./src/modules/user/routes/index.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _controllers_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/index */ "./src/modules/user/controllers/index.js");
+
+
+
+
+const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Get all users.
+
+router.get('/', async (ctx, next) => {
+  try {
+    const result = await Object(_controllers_index__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
+    ctx.type = 'json';
+    ctx.body = result;
+    await next();
+  } catch (err) {
+    // Get the error message and do something.
+    // console.log(err.message)
+    // Throw the error.
+    ctx.throw(500, err);
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
+
+/***/ }),
+
+/***/ "./src/modules/user/routes/update-user.js":
+/*!************************************************!*\
+  !*** ./src/modules/user/routes/update-user.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
+/* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _controllers_update_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/update-user */ "./src/modules/user/controllers/update-user.js");
+
+
+
+
+const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Update a user.
+
+router.put('/user', async (ctx, next) => {
+  try {
+    const result = await Object(_controllers_update_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx);
+    ctx.type = 'json';
+    ctx.body = result;
+    await next();
+  } catch (err) {
+    // Get the error message and do something.
+    // console.log(err.message)
+    // Throw the error.
+    ctx.throw(500, err);
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
 
 /***/ }),
 

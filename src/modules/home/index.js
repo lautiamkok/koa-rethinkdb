@@ -1,7 +1,7 @@
 'use strict'
 
 import Router from 'koa-router'
-import index from './_routes'
+import index from './routes'
 
 // Better with prefix
 // https://www.npmjs.com/package/koa-router#router-prefixes
