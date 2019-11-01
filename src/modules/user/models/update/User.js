@@ -11,8 +11,7 @@ export default class User extends Model {
 
   async updateById (options, objectId) {
     // Enforce the schema.
-    let data = options || this.data
-    let document = await schema.validateAsync(data)
+    let document = await schema.validateAsync(options)
 
     // Update document by id.
     // https://rethinkdb.com/api/javascript/update/

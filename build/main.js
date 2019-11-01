@@ -242,9 +242,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Model {
-  constructor(connection, table, options) {
+  constructor(connection, table) {
     this.table = table;
-    this.options = options;
     this.connection = connection;
   }
 
@@ -627,12 +626,7 @@ __webpack_require__.r(__webpack_exports__);
   } // Create a user instance.
 
 
-  let user = new _models_create_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user', {
-    // example fields that won't be injected into the document:
-    uuid: '1',
-    name: 'dummy',
-    password: '1234'
-  }); // Throw the error if the table does not exist.
+  let user = new _models_create_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user'); // Throw the error if the table does not exist.
 
   let tableFound = await user.hasTable();
 
@@ -1005,8 +999,7 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
   async insert(options) {
     // Enforce the schema.
-    let data = options || this.options;
-    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(data); // Insert a doc.
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(options); // Insert a doc.
     // https://rethinkdb.com/api/javascript/insert
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).insert(document, {
@@ -1185,8 +1178,7 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
   async updateById(options, objectId) {
     // Enforce the schema.
-    let data = options || this.data;
-    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(data); // Update document by id.
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(options); // Update document by id.
     // https://rethinkdb.com/api/javascript/update/
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).update(document, {

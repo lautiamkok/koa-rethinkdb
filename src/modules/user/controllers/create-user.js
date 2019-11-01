@@ -20,12 +20,7 @@ export default async (ctx) => {
   }
 
   // Create a user instance.
-  let user = new User(ctx._rdbConn, 'user', {
-    // example fields that won't be injected into the document:
-    uuid: '1',
-    name: 'dummy',
-    password: '1234'
-  })
+  let user = new User(ctx._rdbConn, 'user')
 
   // Throw the error if the table does not exist.
   let tableFound = await user.hasTable()

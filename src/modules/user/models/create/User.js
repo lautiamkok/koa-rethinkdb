@@ -11,8 +11,7 @@ export default class User extends Model {
 
   async insert (options) {
     // Enforce the schema.
-    let data = options || this.options
-    let document = await schema.validateAsync(data)
+    let document = await schema.validateAsync(options)
 
     // Insert a doc.
     // https://rethinkdb.com/api/javascript/insert
