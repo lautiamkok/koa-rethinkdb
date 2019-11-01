@@ -43,9 +43,6 @@ export default async (ctx) => {
     ctx.throw(404, 'slug has been taken')
   }
 
-  // Get the current doc.
-  let currentDocument = await user.getById(objectId)
-
   // Prepare the update query.
   let timestamp = Date.now()
   let updateQuery = {
@@ -57,11 +54,8 @@ export default async (ctx) => {
     // password: '123123'
   }
 
-  // Merge two objects.
-  let options = {...currentDocument, ...updateQuery}
-
   // Update document by id.
-  let result = await user.updateById(options, objectId)
+  let result = await user.updateById(updateQuery, objectId)
   if (result.replaced !== 1) {
     ctx.throw(404, 'update user failed')
   }

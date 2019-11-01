@@ -9,9 +9,15 @@ export default class User extends Model {
     super(...args)
   }
 
-  async updateById (options, objectId) {
+  async updateById (updateQuery, objectId) {
+    // Get the current doc.
+    let currentDocument = await this.getById(objectId)
+
+    // Merge two objects.
+    let options = {...currentDocument, ...updateQuery}
+
     // Enforce the schema.
-    let document = await schema.validateAsync(options)
+    let document = await schema.validateAsync(options, { convert: false })
 
     // Update document by id.
     // https://rethinkdb.com/api/javascript/update/

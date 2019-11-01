@@ -10,21 +10,32 @@ export default new Schema({
 
   slug: Joi.string()
     .trim()
-    // .lowercase()
+    .min(3)
+    .max(30)
+    .lowercase()
     .required(),
 
   name: Joi.string()
     .trim()
+    .min(3)
+    .max(30)
     .required(),
+
+  // email: Joi.string()
+  //   .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+  //   .trim()
+  //   .required(),
 
   // username: Joi.string()
   //   .alphanum()
   //   .min(3)
   //   .max(30)
+  //   .trim()
   //   .required(),
 
   // password: Joi.string()
   //   .pattern(/^[a-zA-Z0-9]{3,30}$/)
+  //   .trim()
   //   .required(),
 
   // repeatPassword: Joi.ref('password'),
