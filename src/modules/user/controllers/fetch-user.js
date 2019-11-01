@@ -4,9 +4,6 @@ import User from '../models/read/User'
 
 export default async (ctx) => {
   const slug = ctx.params.slug
-  let searchQuery = {
-    slug: slug
-  }
 
   // Create a user instance.
   let user = new User(ctx._rdbConn, 'user')
@@ -17,7 +14,7 @@ export default async (ctx) => {
     ctx.throw(500, 'users table does not exist')
   }
 
-  let result = await user.fetch(searchQuery)
+  let result = await user.fetchBySlug(slug)
   if (!result) {
     ctx.throw(404, 'user not found')
   }

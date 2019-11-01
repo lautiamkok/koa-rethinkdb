@@ -30,7 +30,7 @@ export default async (ctx) => {
     ctx.throw(404, 'user does not exist')
   }
 
-  let result = await user.delete(objectId)
+  let result = await user.deleteById(objectId)
   if (result.deleted !== 1) {
     ctx.throw(404, 'delete user failed')
   }

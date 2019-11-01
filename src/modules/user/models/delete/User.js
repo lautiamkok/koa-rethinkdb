@@ -8,7 +8,7 @@ export default class User extends Model {
     super(...args)
   }
 
-  async delete (objectId) {
+  async deleteById (objectId) {
     // Delete a single document by id.
     // https://rethinkdb.com/api/javascript/delete/
     let result = await rdb.table(this.table)

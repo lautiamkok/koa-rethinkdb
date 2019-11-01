@@ -8,7 +8,12 @@ export default class User extends Model {
     super(...args)
   }
 
-  async fetch (searchQuery) {
+  async fetchBySlug (slug) {
+    // Prepare query.
+    let searchQuery = {
+      slug: slug
+    }
+
     // Retrieve documents by filter.
     // https://rethinkdb.com/api/javascript/filter/
     let result = await rdb.table(this.table)

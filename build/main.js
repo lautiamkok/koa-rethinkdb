@@ -705,7 +705,7 @@ __webpack_require__.r(__webpack_exports__);
     ctx.throw(404, 'user does not exist');
   }
 
-  let result = await user.delete(objectId);
+  let result = await user.deleteById(objectId);
 
   if (result.deleted !== 1) {
     ctx.throw(404, 'delete user failed');
@@ -730,11 +730,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (async ctx => {
-  const slug = ctx.params.slug;
-  let searchQuery = {
-    slug: slug // Create a user instance.
+  const slug = ctx.params.slug; // Create a user instance.
 
-  };
   let user = new _models_read_User__WEBPACK_IMPORTED_MODULE_0__["default"](ctx._rdbConn, 'user'); // Throw the error if the table does not exist.
 
   let tableFound = await user.hasTable();
@@ -743,7 +740,7 @@ __webpack_require__.r(__webpack_exports__);
     ctx.throw(500, 'users table does not exist');
   }
 
-  let result = await user.fetch(searchQuery);
+  let result = await user.fetchBySlug(slug);
 
   if (!result) {
     ctx.throw(404, 'user not found');
@@ -1034,7 +1031,7 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
     super(...args);
   }
 
-  async delete(objectId) {
+  async deleteById(objectId) {
     // Delete a single document by id.
     // https://rethinkdb.com/api/javascript/delete/
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).delete().run(this.connection);
@@ -1067,9 +1064,13 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
     super(...args);
   }
 
-  async fetch(searchQuery) {
-    // Retrieve documents by filter.
-    // https://rethinkdb.com/api/javascript/filter/
+  async fetchBySlug(slug) {
+    // Prepare query.
+    let searchQuery = {
+      slug: slug // Retrieve documents by filter.
+      // https://rethinkdb.com/api/javascript/filter/
+
+    };
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).filter(searchQuery).nth(0) // query for a stream/array element by its position
     .default(null) // will return null if no user found.
     .run(this.connection);
@@ -1102,7 +1103,7 @@ class Users extends _Model__WEBPACK_IMPORTED_MODULE_1__["default"] {
     super(...args);
   }
 
-  async fetch(searchQuery) {
+  async fetch() {
     let cursor = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).orderBy(rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.desc('createdAt')) // latest first
     .run(this.connection);
     let result = await cursor.toArray();

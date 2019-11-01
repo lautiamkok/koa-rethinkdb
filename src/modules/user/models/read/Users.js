@@ -8,7 +8,7 @@ export default class Users extends Model {
     super(...args)
   }
 
-  async fetch (searchQuery) {
+  async fetch () {
     let cursor = await rdb.table(this.table)
       .orderBy(rdb.desc('createdAt')) // latest first
       .run(this.connection)
