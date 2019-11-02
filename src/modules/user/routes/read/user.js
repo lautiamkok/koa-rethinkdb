@@ -1,7 +1,7 @@
 'use strict'
 
 import Router from 'koa-router'
-import controller from '../controllers/fetch-user'
+import controller from '../../controllers/read/user'
 
 const router = new Router()
 

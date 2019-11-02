@@ -45,10 +45,7 @@ export default new Schema({
     .integer()
     .required(),
 
-  // Number or null.
-  updatedAt: [
-    Joi.number()
-      .integer(),
-    null
-  ]
+  // Number only on update.
+  updatedAt: Joi.number()
+    .integer(),
 })

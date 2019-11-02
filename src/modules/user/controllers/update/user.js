@@ -1,6 +1,6 @@
 'use strict'
 
-import User from '../models/update/User'
+import User from '../../models/update/User'
 
 export default async (ctx) => {
   // Get the parsed data.
@@ -15,6 +15,18 @@ export default async (ctx) => {
   if (body.slug === undefined) {
     ctx.throw(400, 'slug is undefined')
   }
+  if (body.email === undefined) {
+    ctx.throw(400, 'email is undefined')
+  }
+  if (body.username === undefined) {
+    ctx.throw(400, 'username is undefined')
+  }
+  if (body.password === undefined) {
+    ctx.throw(400, 'password is undefined')
+  }
+  if (body.confirmPassword === undefined) {
+    ctx.throw(400, 'confirmPassword is undefined')
+  }
   if (body.id === '') {
     ctx.throw(400, 'id is required')
   }
@@ -23,6 +35,15 @@ export default async (ctx) => {
   }
   if (body.slug === '') {
     ctx.throw(400, 'slug is required')
+  }
+  if (body.email === '') {
+    ctx.throw(400, 'email is required')
+  }
+  if (body.username === '') {
+    ctx.throw(400, 'username is required')
+  }
+  if (body.password === '') {
+    ctx.throw(400, 'password is required')
   }
 
   let objectId = body.id
@@ -38,9 +59,23 @@ export default async (ctx) => {
 
   // Check if the provided slug is taken.
   // Find one doc except itself.
-  let slugFound = await user.getBySlugExcludeId(body.slug, objectId)
-  if (slugFound) {
+  let isSlugUnique = await user.isUnique('slug', body.slug, objectId)
+  if (isSlugUnique !== true) {
     ctx.throw(404, 'slug has been taken')
+  }
+
+  // Check if the provided username is taken.
+  // Find one doc except itself.
+  let isUsernameUnique = await user.isUnique('username', body.username, objectId)
+  if (isUsernameUnique !== true) {
+    ctx.throw(404, 'username has been taken')
+  }
+
+  // Check if the provided email is taken.
+  // Find one doc except itself.
+  let isEmailUnique = await user.isUnique('email', body.email, objectId)
+  if (isEmailUnique !== true) {
+    ctx.throw(404, 'email has been taken')
   }
 
   // Prepare the update query.
@@ -48,6 +83,8 @@ export default async (ctx) => {
   let updateQuery = {
     name: body.name,
     slug: body.slug,
+    email: body.email,
+    username: body.username,
     updatedAt: timestamp,
     // example fields that won't be injected into the document:
     // username: 'marymoe',

@@ -1,6 +1,6 @@
 'use strict'
 
-import User from '../models/create/User'
+import User from '../../models/create/User'
 
 export default async (ctx) => {
   // Get the parsed data.
@@ -29,8 +29,8 @@ export default async (ctx) => {
   }
 
   // Check if the provided slug is taken.
-  let slugFound = await user.getBySlug(body.slug)
-  if (slugFound) {
+  let isSlugUnique = await user.isUnique('slug', body.slug)
+  if (isSlugUnique !== true) {
     ctx.throw(404, 'slug has been taken')
   }
 
@@ -40,7 +40,6 @@ export default async (ctx) => {
   let options = {
     name: body.name,
     slug: body.slug,
-    createdAt: timestamp,
     // example fields that won't be injected into the document:
     // username: 'marymoe',
     // password: '123123'

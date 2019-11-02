@@ -1,6 +1,6 @@
 'use strict'
 
-import User from '../models/delete/User'
+import User from '../../models/delete/User'
 
 export default async (ctx) => {
   // Get the parsed data.

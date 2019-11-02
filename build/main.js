@@ -155,7 +155,7 @@ __webpack_require__.r(__webpack_exports__);
     // Get the db connection.
     const connection = await Object(core_database_rethinkdb_connection__WEBPACK_IMPORTED_MODULE_1__["default"])(); // Subscribe to user table's changefeed.
 
-    var cursor = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('users').changes().run(connection);
+    var cursor = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table('user').changes().run(connection);
     cursor.each(function (err, row) {
       if (err) {
         throw err;
@@ -245,6 +245,11 @@ class Model {
   constructor(connection, table) {
     this.table = table;
     this.connection = connection;
+  }
+
+  async hasTable() {
+    let exists = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.tableList().contains(this.table).run(this.connection);
+    return exists;
   }
 
 }
@@ -592,16 +597,16 @@ router.get('/', middleware1, middleware2, middleware3, async (ctx, next) => {
 
 /***/ }),
 
-/***/ "./src/modules/user/controllers/create-user.js":
+/***/ "./src/modules/user/controllers/create/user.js":
 /*!*****************************************************!*\
-  !*** ./src/modules/user/controllers/create-user.js ***!
+  !*** ./src/modules/user/controllers/create/user.js ***!
   \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _models_create_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/create/User */ "./src/modules/user/models/create/User.js");
+/* harmony import */ var _models_create_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/create/User */ "./src/modules/user/models/create/User.js");
 
 
 
@@ -635,9 +640,9 @@ __webpack_require__.r(__webpack_exports__);
   } // Check if the provided slug is taken.
 
 
-  let slugFound = await user.getBySlug(body.slug);
+  let isSlugUnique = await user.isUnique('slug', body.slug);
 
-  if (slugFound) {
+  if (isSlugUnique !== true) {
     ctx.throw(404, 'slug has been taken');
   } // Insert a doc.
   // Current timestamp.
@@ -646,8 +651,7 @@ __webpack_require__.r(__webpack_exports__);
   let timestamp = Date.now();
   let options = {
     name: body.name,
-    slug: body.slug,
-    createdAt: timestamp // example fields that won't be injected into the document:
+    slug: body.slug // example fields that won't be injected into the document:
     // username: 'marymoe',
     // password: '123123'
 
@@ -663,16 +667,16 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/user/controllers/delete-user.js":
+/***/ "./src/modules/user/controllers/delete/user.js":
 /*!*****************************************************!*\
-  !*** ./src/modules/user/controllers/delete-user.js ***!
+  !*** ./src/modules/user/controllers/delete/user.js ***!
   \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _models_delete_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/delete/User */ "./src/modules/user/models/delete/User.js");
+/* harmony import */ var _models_delete_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/delete/User */ "./src/modules/user/models/delete/User.js");
 
 
 
@@ -716,16 +720,16 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/user/controllers/fetch-user.js":
-/*!****************************************************!*\
-  !*** ./src/modules/user/controllers/fetch-user.js ***!
-  \****************************************************/
+/***/ "./src/modules/user/controllers/read/user.js":
+/*!***************************************************!*\
+  !*** ./src/modules/user/controllers/read/user.js ***!
+  \***************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _models_read_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/read/User */ "./src/modules/user/models/read/User.js");
+/* harmony import */ var _models_read_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/read/User */ "./src/modules/user/models/read/User.js");
 
 
 
@@ -751,16 +755,16 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/user/controllers/index.js":
-/*!***********************************************!*\
-  !*** ./src/modules/user/controllers/index.js ***!
-  \***********************************************/
+/***/ "./src/modules/user/controllers/read/users.js":
+/*!****************************************************!*\
+  !*** ./src/modules/user/controllers/read/users.js ***!
+  \****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _models_read_Users__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/read/Users */ "./src/modules/user/models/read/Users.js");
+/* harmony import */ var _models_read_Users__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/read/Users */ "./src/modules/user/models/read/Users.js");
 
 
 
@@ -780,21 +784,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/user/controllers/update-user.js":
+/***/ "./src/modules/user/controllers/update/user.js":
 /*!*****************************************************!*\
-  !*** ./src/modules/user/controllers/update-user.js ***!
+  !*** ./src/modules/user/controllers/update/user.js ***!
   \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _models_update_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/update/User */ "./src/modules/user/models/update/User.js");
+/* harmony import */ var _models_update_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/update/User */ "./src/modules/user/models/update/User.js");
 
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 /* harmony default export */ __webpack_exports__["default"] = (async ctx => {
@@ -813,6 +813,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     ctx.throw(400, 'slug is undefined');
   }
 
+  if (body.email === undefined) {
+    ctx.throw(400, 'email is undefined');
+  }
+
+  if (body.username === undefined) {
+    ctx.throw(400, 'username is undefined');
+  }
+
+  if (body.password === undefined) {
+    ctx.throw(400, 'password is undefined');
+  }
+
+  if (body.confirmPassword === undefined) {
+    ctx.throw(400, 'confirmPassword is undefined');
+  }
+
   if (body.id === '') {
     ctx.throw(400, 'id is required');
   }
@@ -823,6 +839,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
   if (body.slug === '') {
     ctx.throw(400, 'slug is required');
+  }
+
+  if (body.email === '') {
+    ctx.throw(400, 'email is required');
+  }
+
+  if (body.username === '') {
+    ctx.throw(400, 'username is required');
+  }
+
+  if (body.password === '') {
+    ctx.throw(400, 'password is required');
   }
 
   let objectId = body.id; // Create a user instance.
@@ -837,30 +865,42 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   // Find one doc except itself.
 
 
-  let slugFound = await user.getBySlugExcludeId(body.slug, objectId);
+  let isSlugUnique = await user.isUnique('slug', body.slug, objectId);
 
-  if (slugFound) {
+  if (isSlugUnique !== true) {
     ctx.throw(404, 'slug has been taken');
-  } // Get the current doc.
+  } // Check if the provided username is taken.
+  // Find one doc except itself.
 
 
-  let currentDocument = await user.getById(objectId); // Prepare the update query.
+  let isUsernameUnique = await user.isUnique('username', body.username, objectId);
+
+  if (isUsernameUnique !== true) {
+    ctx.throw(404, 'username has been taken');
+  } // Check if the provided email is taken.
+  // Find one doc except itself.
+
+
+  let isEmailUnique = await user.isUnique('email', body.email, objectId);
+
+  if (isEmailUnique !== true) {
+    ctx.throw(404, 'email has been taken');
+  } // Prepare the update query.
+
 
   let timestamp = Date.now();
   let updateQuery = {
     name: body.name,
     slug: body.slug,
+    email: body.email,
+    username: body.username,
     updatedAt: timestamp // example fields that won't be injected into the document:
     // username: 'marymoe',
     // password: '123123'
-    // Merge two objects.
+    // Update document by id.
 
   };
-
-  let options = _objectSpread({}, currentDocument, updateQuery); // Update document by id.
-
-
-  let result = await user.updateById(options, objectId);
+  let result = await user.updateById(updateQuery, objectId);
 
   if (result.replaced !== 1) {
     ctx.throw(404, 'update user failed');
@@ -882,11 +922,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes */ "./src/modules/user/routes/index.js");
-/* harmony import */ var _routes_fetch_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routes/fetch-user */ "./src/modules/user/routes/fetch-user.js");
-/* harmony import */ var _routes_create_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./routes/create-user */ "./src/modules/user/routes/create-user.js");
-/* harmony import */ var _routes_update_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./routes/update-user */ "./src/modules/user/routes/update-user.js");
-/* harmony import */ var _routes_delete_user__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./routes/delete-user */ "./src/modules/user/routes/delete-user.js");
+/* harmony import */ var _routes_read_users__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes/read/users */ "./src/modules/user/routes/read/users.js");
+/* harmony import */ var _routes_read_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routes/read/user */ "./src/modules/user/routes/read/user.js");
+/* harmony import */ var _routes_create_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./routes/create/user */ "./src/modules/user/routes/create/user.js");
+/* harmony import */ var _routes_update_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./routes/update/user */ "./src/modules/user/routes/update/user.js");
+/* harmony import */ var _routes_delete_user__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./routes/delete/user */ "./src/modules/user/routes/delete/user.js");
 
 
 
@@ -900,7 +940,7 @@ __webpack_require__.r(__webpack_exports__);
 const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a({
   prefix: '/users'
 });
-const routes = [_routes__WEBPACK_IMPORTED_MODULE_1__["default"], _routes_fetch_user__WEBPACK_IMPORTED_MODULE_2__["default"], _routes_create_user__WEBPACK_IMPORTED_MODULE_3__["default"], _routes_update_user__WEBPACK_IMPORTED_MODULE_4__["default"], _routes_delete_user__WEBPACK_IMPORTED_MODULE_5__["default"]];
+const routes = [_routes_read_users__WEBPACK_IMPORTED_MODULE_1__["default"], _routes_read_user__WEBPACK_IMPORTED_MODULE_2__["default"], _routes_create_user__WEBPACK_IMPORTED_MODULE_3__["default"], _routes_update_user__WEBPACK_IMPORTED_MODULE_4__["default"], _routes_delete_user__WEBPACK_IMPORTED_MODULE_5__["default"]];
 
 for (var route of routes) {
   router.use(route.routes(), route.allowedMethods());
@@ -932,11 +972,6 @@ __webpack_require__.r(__webpack_exports__);
 class Model extends model_rethinkdb__WEBPACK_IMPORTED_MODULE_1__["default"] {
   constructor(...args) {
     super(...args);
-  }
-
-  async hasTable() {
-    let exists = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.tableList().contains(this.table).run(this.connection);
-    return exists;
   }
 
   async getBySlug(slug) {
@@ -996,7 +1031,9 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
   async insert(options) {
     // Enforce the schema.
-    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(options); // Insert a doc.
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(options, {
+      convert: false
+    }); // Insert a doc.
     // https://rethinkdb.com/api/javascript/insert
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).insert(document, {
@@ -1133,22 +1170,27 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = (new model_Schema__WEBPACK_IMPORTED_MODULE_1__["default"]({
   id: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().guid(),
-  slug: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim() // .lowercase()
-  .required(),
-  name: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim().required(),
+  slug: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim().min(3).max(30).lowercase().required(),
+  name: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.string().trim().min(3).max(30).required(),
+  // email: Joi.string()
+  //   .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+  //   .trim()
+  //   .required(),
   // username: Joi.string()
   //   .alphanum()
   //   .min(3)
   //   .max(30)
+  //   .trim()
   //   .required(),
   // password: Joi.string()
   //   .pattern(/^[a-zA-Z0-9]{3,30}$/)
+  //   .trim()
   //   .required(),
   // repeatPassword: Joi.ref('password'),
   // Number only.
   createdAt: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.number().integer().required(),
-  // Number or null.
-  updatedAt: [_hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.number().integer(), null]
+  // Number only on update.
+  updatedAt: _hapi_joi__WEBPACK_IMPORTED_MODULE_0___default.a.number().integer()
 }));
 
 /***/ }),
@@ -1169,6 +1211,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Model */ "./src/modules/user/models/Model.js");
 
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -1177,9 +1223,16 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
     super(...args);
   }
 
-  async updateById(options, objectId) {
-    // Enforce the schema.
-    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(options); // Update document by id.
+  async updateById(updateQuery, objectId) {
+    // Get the current doc.
+    let currentDocument = await this.getById(objectId); // Merge two objects.
+
+    let options = _objectSpread({}, currentDocument, updateQuery); // Enforce the schema.
+
+
+    let document = await _schema__WEBPACK_IMPORTED_MODULE_1__["default"].validateAsync(options, {
+      convert: false
+    }); // Update document by id.
     // https://rethinkdb.com/api/javascript/update/
 
     let result = await rethinkdb__WEBPACK_IMPORTED_MODULE_0___default.a.table(this.table).get(objectId).update(document, {
@@ -1192,9 +1245,9 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
 /***/ }),
 
-/***/ "./src/modules/user/routes/create-user.js":
+/***/ "./src/modules/user/routes/create/user.js":
 /*!************************************************!*\
-  !*** ./src/modules/user/routes/create-user.js ***!
+  !*** ./src/modules/user/routes/create/user.js ***!
   \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -1203,7 +1256,7 @@ class User extends _Model__WEBPACK_IMPORTED_MODULE_2__["default"] {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_create_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/create-user */ "./src/modules/user/controllers/create-user.js");
+/* harmony import */ var _controllers_create_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controllers/create/user */ "./src/modules/user/controllers/create/user.js");
 
 
 
@@ -1227,9 +1280,9 @@ router.post('/user', async (ctx, next) => {
 
 /***/ }),
 
-/***/ "./src/modules/user/routes/delete-user.js":
+/***/ "./src/modules/user/routes/delete/user.js":
 /*!************************************************!*\
-  !*** ./src/modules/user/routes/delete-user.js ***!
+  !*** ./src/modules/user/routes/delete/user.js ***!
   \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -1238,7 +1291,7 @@ router.post('/user', async (ctx, next) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_delete_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/delete-user */ "./src/modules/user/controllers/delete-user.js");
+/* harmony import */ var _controllers_delete_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controllers/delete/user */ "./src/modules/user/controllers/delete/user.js");
 
 
 
@@ -1262,10 +1315,10 @@ router.del('/user', async (ctx, next) => {
 
 /***/ }),
 
-/***/ "./src/modules/user/routes/fetch-user.js":
-/*!***********************************************!*\
-  !*** ./src/modules/user/routes/fetch-user.js ***!
-  \***********************************************/
+/***/ "./src/modules/user/routes/read/user.js":
+/*!**********************************************!*\
+  !*** ./src/modules/user/routes/read/user.js ***!
+  \**********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1273,7 +1326,7 @@ router.del('/user', async (ctx, next) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_fetch_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/fetch-user */ "./src/modules/user/controllers/fetch-user.js");
+/* harmony import */ var _controllers_read_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controllers/read/user */ "./src/modules/user/controllers/read/user.js");
 
 
 
@@ -1282,7 +1335,7 @@ const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Get t
 
 router.get('/:slug', async (ctx, next) => {
   try {
-    const result = await Object(_controllers_fetch_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
+    const result = await Object(_controllers_read_user__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
     ctx.type = 'json';
     ctx.body = result;
     await next();
@@ -1297,10 +1350,10 @@ router.get('/:slug', async (ctx, next) => {
 
 /***/ }),
 
-/***/ "./src/modules/user/routes/index.js":
-/*!******************************************!*\
-  !*** ./src/modules/user/routes/index.js ***!
-  \******************************************/
+/***/ "./src/modules/user/routes/read/users.js":
+/*!***********************************************!*\
+  !*** ./src/modules/user/routes/read/users.js ***!
+  \***********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1308,7 +1361,7 @@ router.get('/:slug', async (ctx, next) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/index */ "./src/modules/user/controllers/index.js");
+/* harmony import */ var _controllers_read_users__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controllers/read/users */ "./src/modules/user/controllers/read/users.js");
 
 
 
@@ -1317,7 +1370,7 @@ const router = new koa_router__WEBPACK_IMPORTED_MODULE_0___default.a(); // Get a
 
 router.get('/', async (ctx, next) => {
   try {
-    const result = await Object(_controllers_index__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
+    const result = await Object(_controllers_read_users__WEBPACK_IMPORTED_MODULE_1__["default"])(ctx, next);
     ctx.type = 'json';
     ctx.body = result;
     await next();
@@ -1332,9 +1385,9 @@ router.get('/', async (ctx, next) => {
 
 /***/ }),
 
-/***/ "./src/modules/user/routes/update-user.js":
+/***/ "./src/modules/user/routes/update/user.js":
 /*!************************************************!*\
-  !*** ./src/modules/user/routes/update-user.js ***!
+  !*** ./src/modules/user/routes/update/user.js ***!
   \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -1343,7 +1396,7 @@ router.get('/', async (ctx, next) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! koa-router */ "koa-router");
 /* harmony import */ var koa_router__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(koa_router__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _controllers_update_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controllers/update-user */ "./src/modules/user/controllers/update-user.js");
+/* harmony import */ var _controllers_update_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../controllers/update/user */ "./src/modules/user/controllers/update/user.js");
 
 
 

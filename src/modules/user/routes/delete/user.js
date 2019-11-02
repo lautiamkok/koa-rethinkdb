@@ -1,7 +1,7 @@
 'use strict'
 
 import Router from 'koa-router'
-import controller from '../controllers/delete-user'
+import controller from '../../controllers/delete/user'
 
 const router = new Router()
 

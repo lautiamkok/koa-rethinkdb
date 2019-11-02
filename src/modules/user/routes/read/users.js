@@ -1,14 +1,14 @@
 'use strict'
 
 import Router from 'koa-router'
-import controller from '../controllers/update-user'
+import controller from '../../controllers/read/users'
 
 const router = new Router()
 
-// Update a user.
-router.put('/user', async (ctx, next) => {
+// Get all users.
+router.get('/', async (ctx, next) => {
   try {
-    const result = await controller(ctx)
+    const result = await controller(ctx, next)
 
     ctx.type = 'json'
     ctx.body = result

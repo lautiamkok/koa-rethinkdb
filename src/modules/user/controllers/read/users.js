@@ -1,6 +1,6 @@
 'use strict'
 
-import Users from '../models/read/Users'
+import Users from '../../models/read/Users'
 
 export default async (ctx) => {
   // Create a user instance.

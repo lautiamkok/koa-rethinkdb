@@ -1,12 +1,12 @@
 'use strict'
 
 import Router from 'koa-router'
-import controller from '../controllers/index'
+import controller from '../../controllers/create/user'
 
 const router = new Router()
 
-// Get all users.
-router.get('/', async (ctx, next) => {
+// Add a user.
+router.post('/user', async (ctx, next) => {
   try {
     const result = await controller(ctx, next)
 

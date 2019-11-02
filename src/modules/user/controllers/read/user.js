@@ -1,6 +1,6 @@
 'use strict'
 
-import User from '../models/read/User'
+import User from '../../models/read/User'
 
 export default async (ctx) => {
   const slug = ctx.params.slug
